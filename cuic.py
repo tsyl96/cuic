@@ -1,6 +1,8 @@
+#!/usr/bin/python3
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from datetime import date
+from pathlib import Path
 import datetime
 import time
 import csv
@@ -11,7 +13,11 @@ from selenium.common.exceptions import NoSuchElementException
 from pandas.io.excel import ExcelWriter
 from selenium.common.exceptions import StaleElementReferenceException
 
-driver = webdriver.Chrome()
+chrome_options = webdriver.ChromeOptions();
+chrome_options.add_argument('--headless')
+chrome_options.add_argument('--no-sandbox')
+chrome_options.add_argument('--disable-dev-shm-usage')
+driver = webdriver.Chrome("/usr/local/bin/chromedriver",chrome_options=chrome_options)
 
 driver.get("https://10.84.86.44:8444/cuic/Main.htmx")
 
@@ -41,6 +47,8 @@ def open_CCSC():
 
 
 open_CCSC()
+
+out_folder = Path('/home/thetsu/Desktop/autoprogram/cuic')
 
 today = date.today()
 d3 = today.strftime("%m/%d/20%y")
@@ -152,13 +160,13 @@ def data_output():
 
     # out_name = d_out + "(" + str(hr-1) + "-" + str(hr) + ").csv"
 
-    with open(out_name, mode='w') as file:
+    with open(str(out_folder / out_name), mode='w') as file:
         file_writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         file_writer.writerow(
-            ['Interval','CallOffered', 'CallsHandled', 'ASA', 'AHT', 'AvgTalkTime', 'AvgHoldTime', 'AbanRate', 'SLPercentage'])
+            ['Interval','CallOffered', 'CallsHandled', 'AbanRate', 'SLPercentage', 'ASA', 'AHT', 'AvgTalkTime', 'AvgHoldTime'])
         file_writer.writerow(
-            [insert_hr ,CallsOffered.text, CallsHandled.text, ASA.text, AHT.text, AvgTalkTime.text, AvgHoldTime.text,
-             AbanRate.text, SLPercentage.text])
+            [insert_hr ,CallsOffered.text, CallsHandled.text,
+             AbanRate.text, SLPercentage.text + "%", ASA.text, AHT.text, AvgTalkTime.text, AvgHoldTime.text])
 
     print("for one report= " + out_name)
 
@@ -227,17 +235,17 @@ def short_call_data():
     short_call = shortcall_table.find_element_by_xpath('//*[@id="tbody"]/tr/td[8]')
     print(short_call.text)
 
-    data = pd.read_csv(out_name)
+    data = pd.read_csv(str(out_folder / out_name))
     # data = data.convert_objects(convert_numeric=True)
     data.insert(9,'Short Call', short_call.text)
-    data.to_csv(out_name,index=False)
+    data.to_csv(str(out_folder / out_name),index=False)
 
 short_call_data()
 
-userDf = pd.read_csv(out_name)
+userDf = pd.read_csv(str(out_folder / out_name))
 print(userDf)
 
-with open(display_filename, 'a')as append_total:
+with open(str(out_folder / display_filename), 'a')as append_total:
     userDf.to_csv(append_total,index=False ,header=False)
 
 #with ExcelWriter(excel_name)as ew:
@@ -329,18 +337,18 @@ def total_output():
     print("total AbanRate", total_AbanRate.text)
     print("total SLPercentage", total_SLPercentage.text)
 
-    with open(total_name, mode='w') as file:
+    with open(str(out_folder / total_name), mode='w') as file:
         file_writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         file_writer.writerow(
-            ['Interval','CallOffered', 'CallsHandled', 'ASA', 'AHT', 'AvgTalkTime', 'AvgHoldTime', 'AbanRate', 'SLPercentage'])
+            ['Interval','CallOffered', 'CallsHandled', 'AbanRate', 'SLPercentage', 'ASA', 'AHT', 'AvgTalkTime', 'AvgHoldTime'])
 #        i = hr
 #        while (i < 24):
 #            final_interval = str(i) + ":00-" + str(i + 1) + ":00"
 #            file_writer.writerow([final_interval,"", "", " ", "", "", "", "", "",""])
 #            i += 1
         file_writer.writerow(
-            ["Total", total_CallsOffered.text, total_CallsHandled.text, total_ASA.text, total_AHT.text, total_AvgTalkTime.text, total_AvgHoldTime.text,
-             total_AbanRate.text, total_SLPercentage.text])
+            ["Total", total_CallsOffered.text, total_CallsHandled.text, total_AbanRate.text, total_SLPercentage.text + "%",
+             total_ASA.text, total_AHT.text, total_AvgTalkTime.text, total_AvgHoldTime.text])
 
     print("total report= " + total_name)
 ####Total Short Call
@@ -396,12 +404,12 @@ def total_output():
 ### Data Out
 
 #shine
-    data = pd.read_csv(total_name)
+    data = pd.read_csv(str(out_folder / total_name))
     data.insert(9, 'Short Call', total_short_call.text)
-    data.to_csv(total_name, index=False)
+    data.to_csv(str(out_folder / total_name), index=False)
 
 #shine
-    with open("Interval.csv", mode='w') as file:
+    with open(str(out_folder / "Interval.csv"), mode='w') as file:
         file_writer = csv.writer(file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         file_writer.writerow(
             ['Interval', 'CallOffered', 'CallsHandled', 'ASA', 'AHT', 'AvgTalkTime', 'AvgHoldTime', 'AbanRate',
@@ -412,22 +420,22 @@ def total_output():
             file_writer.writerow([final_interval, "", "", " ", "", "", "", "", "", ""])
             i += 1
 
-    total_Df = pd.read_csv(total_name)
+    total_Df = pd.read_csv(str(out_folder / total_name))
     print(total_Df)
 
-    shutil.copyfile(display_filename, final_filename)
+    shutil.copyfile(str(out_folder / display_filename), str(out_folder / final_filename))
 
-    interval_df = pd.read_csv("Interval.csv", error_bad_lines=False)
+    interval_df = pd.read_csv(str(out_folder / "Interval.csv"), error_bad_lines=False)
     print(interval_df)
 
-    with open(final_filename, 'a')as append_interval:
+    with open(str(out_folder / final_filename), 'a')as append_interval:
         interval_df.to_csv(append_interval, index=False, header=False)
 
-    with open(final_filename, 'a')as append_final:
+    with open(str(out_folder / final_filename), 'a')as append_final:
         total_Df.to_csv(append_final, index=False, header=False)
 
-    with ExcelWriter(excel_name)as ew:
-        pd.read_csv(final_filename, error_bad_lines=False).to_excel(ew, sheet_name="MIS report", index=False)
+    with ExcelWriter(str(out_folder / excel_name))as ew:
+        pd.read_csv(str(out_folder / final_filename), error_bad_lines=False).to_excel(ew, sheet_name="MIS report", index=False)
 
 total_output()
 
