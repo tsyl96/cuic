@@ -63,7 +63,7 @@ def open_CCSC():
     driver.implicitly_wait(1)
     driver.find_element_by_id("reportDrawer_9").click()
     driver.implicitly_wait(1)
-    driver.find_element_by_id("reportDrawer_22").click()
+    driver.find_element_by_id("reportDrawer_23").click()
 
 open_CCSC()
 
@@ -164,7 +164,7 @@ class MIS_Report:
 
         driver.switch_to.default_content()
         driver.implicitly_wait(1)
-        driver.find_element_by_id("reportDrawer_19").click()
+        driver.find_element_by_id("reportDrawer_20").click()
         driver.switch_to.frame(driver.find_element_by_id('RnR_Answer_Short_Calls'))
         driver.switch_to.frame(driver.find_element_by_id('filter_iframe'))
 
@@ -228,14 +228,6 @@ def add_header():
 add_header()
 driver.refresh()
 
-#Reopen CCSC for Total
-def reopen_CCSC():
-    driver.switch_to.default_content()
-    driver.implicitly_wait(1)
-    driver.find_element_by_id("reportDrawer_19").click()
-
-reopen_CCSC()
-
 #Open CCSC for TotalReport
 def total_CCSC():
     #driver.switch_to.default_content()
@@ -246,7 +238,7 @@ def total_CCSC():
     driver.implicitly_wait(1)
 #    driver.find_element_by_id("reportDrawer_9").click()
     driver.implicitly_wait(1)
-    driver.find_element_by_id("reportDrawer_22").click()
+    driver.find_element_by_id("reportDrawer_23").click()
 
 driver.forward()
 driver.back()
@@ -311,6 +303,5 @@ def automail():
         	attachments=str(out_folder / excel_name)
 	)
 	print("\nMail sent \n_______________________________________________________________________________________ \n")
-	#driver.implicitly_wait(1)
 
 automail()
