@@ -1,0 +1,6 @@
+
+This is backup file for cron job
+
+
+5 7-23 * * * date >> /home/sbadmin/Desktop/autoprogram/cuic.log && date >> /home/sbadmin/Desktop/autoprogram/cuic_error.log && python3.5 /home/sbadmin/Desktop/autoprogram/cuic5.py 1>> /home/sbadmin/Desktop/autoprogram/cuic.log 2>> /home/sbadmin/Desktop/autoprogram/cuic_error.log
+15 7-23 * * * killall chrome
