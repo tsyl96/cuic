@@ -1,5 +1,5 @@
 # cuic
-automation for web script 
+automation web script for Hourly Report sheets of ISP call center agents 
 python 3.7 
 required lib
 selenium
