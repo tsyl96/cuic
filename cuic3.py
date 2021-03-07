@@ -48,8 +48,8 @@ final_filename = "Final " + d_out + ".csv"
 
 # Login CUIC
 def cuic_login():
-    driver.find_element_by_id("j_username").send_keys("C64610")
-    driver.find_element_by_id("j_password").send_keys("Shine@321")
+    driver.find_element_by_id("j_username").send_keys("")
+    driver.find_element_by_id("j_password").send_keys("")
     driver.find_element_by_id("j_domain").send_keys("CUIC")
     driver.find_element_by_id("cuesLoginSubmitButton").click()
 
