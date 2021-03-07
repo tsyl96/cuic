@@ -82,8 +82,8 @@ B2B_excel_name = "B2B Hourly Report For" + d_out + time + ".xlsx"
 
 # Login CUIC
 def cuic_login():
-    driver.find_element_by_id("j_username").send_keys("C64610")
-    driver.find_element_by_id("j_password").send_keys("Shine@321")
+    driver.find_element_by_id("j_username").send_keys("")
+    driver.find_element_by_id("j_password").send_keys("")
     driver.find_element_by_id("j_domain").send_keys("CUIC")
     driver.find_element_by_id("cuesLoginSubmitButton").click()
 
